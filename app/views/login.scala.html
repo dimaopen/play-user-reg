@@ -1,0 +1,23 @@
+@()
+
+@main("Please login") {
+    <div class="container">
+
+        <form class="form-signin" action="/login" method="POST" id="auth-form"><input type="hidden" name="_csrf" value="a27a69df-53ab-4b73-879d-e797300d1a7c"/>
+            <h2 class="form-signin-heading">Портал</h2>
+
+
+
+            <label for="inputUserName" class="sr-only">Пользователь</label> <input type="text" name="username"
+            id="inputUserName" class="form-control" placeholder="Пользователь" required autofocus /> <label
+            for="inputPassword" class="sr-only">Пароль</label> <input type="password" name="password"
+            id="inputPassword" class="form-control" placeholder="Пароль" required />
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+
+            <input name="_csrf" type="hidden" value="a27a69df-53ab-4b73-879d-e797300d1a7c" />
+
+        </form>
+
+    </div>
+}
