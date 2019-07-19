@@ -1,5 +1,7 @@
 package models
 
+import java.time.Instant
+
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -19,20 +21,24 @@ object Entities {
   object Farmer {
     implicit val defaultWrites: Writes[Farmer] = new Writes[Farmer] {
       def writes(f: Farmer) = Json.obj(
-        "id" -> f.id,
-        "firstName" -> f.firstName,
-        "lastName" -> f.lastName,
-        "countryCode" -> f.countryCode,
+      "id" -> f.id,
+      "firstName" -> f.firstName,
+      "lastName" -> f.lastName,
+      "countryCode" -> f.countryCode,
       )
     }
 
     implicit val defaultReads: Reads[NewFarmer] = (
-        (JsPath \ "firstName").read[String](minLength[String](2) keepAnd maxLength[String](100)) and
-        (JsPath \ "lastName").read[String](minLength[String](2) keepAnd maxLength[String](100)) and
-        (JsPath \ "taxNumber").read[String](minLength[String](4) keepAnd maxLength[String](40)) and
-        (JsPath \ "countryCode").read[String](maxLength[String](2))
-      ) (NewFarmer.apply _)
+                     (JsPath \ "firstName").read[String](minLength[String](2) keepAnd maxLength[String](100)) and
+                     (JsPath \ "lastName").read[String](minLength[String](2) keepAnd maxLength[String](100)) and
+                     (JsPath \ "taxNumber").read[String](minLength[String](4) keepAnd maxLength[String](40)) and
+                     (JsPath \ "countryCode").read[String](maxLength[String](2))
+    ) (NewFarmer.apply _)
 
   }
+
+  case class User(id: Int, username: String, hashedPassword: Array[Byte], blocked: Boolean = false)
+
+  case class Token(tokenValue: String, issued: Instant, validUntil: Instant, userId: Int)
 
 }

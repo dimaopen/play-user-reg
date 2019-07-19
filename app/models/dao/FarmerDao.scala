@@ -4,8 +4,6 @@ import javax.inject.Inject
 import models.Entities.{Farmer, NewFarmer}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
-import slick.jdbc.PostgresProfile.api._
-import slick.lifted.QueryBase
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -17,6 +15,8 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class FarmerDao @Inject() (val dbConfigProvider: DatabaseConfigProvider)
                           (implicit ec: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile]{
+
+  import dbConfig.profile.api._
 
   type CountryRow = (Int, String, String)
 
@@ -38,7 +38,7 @@ class FarmerDao @Inject() (val dbConfigProvider: DatabaseConfigProvider)
     def taxNumber = column[String]("tax_number")
     def countryId = column[Int]("country_id")
     // Every table needs a * projection with the same type as the table's type parameter
-    def * = (id.?, firstName, lastName, taxNumber, countryId) <> (FarmerRow.tupled, FarmerRow.unapply)
+    def * = (id.?, firstName, lastName, taxNumber, countryId).mapTo[FarmerRow]
     def country = foreignKey("fk_farmer_country_id", countryId, countries)(_.id)
   }
 

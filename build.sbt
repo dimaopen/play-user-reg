@@ -7,6 +7,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.12.8"
 
+scalacOptions += "-Ypartial-unification"
+scalacOptions += "-language:higherKinds"
+
 libraryDependencies += guice
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick" % "3.0.3",
@@ -14,6 +17,7 @@ libraryDependencies ++= Seq(
 )
 libraryDependencies += evolutions
 libraryDependencies += "org.postgresql" % "postgresql" % "42.2.5"
+libraryDependencies += "org.typelevel" %% "cats-core" % "1.6.0"
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
 
 // Adds additional packages into Twirl
