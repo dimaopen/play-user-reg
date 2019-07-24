@@ -1,7 +1,7 @@
 package models
 
-import java.sql.Timestamp
-import java.time.Instant
+import java.sql.{Date, Timestamp}
+import java.time.{Instant, LocalDate}
 
 import slick.jdbc.JdbcProfile
 
@@ -18,6 +18,15 @@ package object dao {
       MappedColumnType.base[Instant, Timestamp](
         instant => new Timestamp(instant.getEpochSecond * 1000),
         ts => ts.toInstant
+      )
+    }
+
+    implicit def localDateType(implicit profile: JdbcProfile): profile.ColumnType[LocalDate] = {
+      import profile.api._
+
+      MappedColumnType.base[LocalDate, Date](
+        localDate => new Date(localDate.getYear - 1900, localDate.getMonth.getValue - 1, localDate.getDayOfMonth),
+        date => date.toLocalDate
       )
     }
   }

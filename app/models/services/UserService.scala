@@ -18,11 +18,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserService @Inject()(val userDao: UserDao, val tokenDao: TokenDao)
                            (implicit ec: ExecutionContext) {
 
-  userDao.findUser("admin", hash("secret")).foreach {
-    case None => userDao.insertUser(User(0, "admin", hash("secret")))
-    case _ =>
-  }
-
   def authenticate(username: String, password: String): Future[Option[User]] = {
     userDao.findUser(username, hash(password))
   }
@@ -35,7 +30,7 @@ class UserService @Inject()(val userDao: UserDao, val tokenDao: TokenDao)
 
   def validateToken(tokenValue: String): OptionT[Future, User] = {
       tokenDao.findToken(tokenValue).filter {
-        case (token, user) => token.validUntil.isBefore(Instant.now()) && !user.blocked
+        case (token, user) => Instant.now().isBefore(token.validUntil) && !user.blocked
       }.map {
         case (token, user) => user
       }

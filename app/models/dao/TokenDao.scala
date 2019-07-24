@@ -4,9 +4,10 @@ import java.sql.Timestamp
 import java.time.Instant
 
 import cats.data.OptionT
+import cats.instances.future._
 import javax.inject.Inject
-import models.Entities.User
-import models.Entities.Token
+import models.Entities.{Person, Token, User}
+import models.dao.UserDao.UserRow
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
@@ -52,9 +53,12 @@ class TokenDao @Inject()(val dbConfigProvider: DatabaseConfigProvider, val userD
     val query = for {
       token <- tokens.filter(_.tokenValue === tokenValue)
       user <- token.user
-    } yield (token, user)
-    val eventualMaybeTuple: Future[Option[(Token, User)]] = db.run(query.result).map(_.headOption)
-    OptionT(eventualMaybeTuple)
+      person <- user.person
+    } yield (token, user, person)
+    val eventualMaybeTuple: Future[Option[(Token, UserRow, Person)]] = db.run(query.result).map(_.headOption)
+    for {
+      (token, user, person) <- OptionT(eventualMaybeTuple)
+    } yield (token, userDao.createUser(user, person))
   }
 
 }

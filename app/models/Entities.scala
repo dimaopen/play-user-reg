@@ -1,6 +1,6 @@
 package models
 
-import java.time.Instant
+import java.time.{Instant, LocalDate}
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -18,7 +18,7 @@ object Entities {
 
   case class NewFarmer(firstName: String, lastName: String, taxNumber: String, countryCode: String)
 
-  object Farmer {
+  object Farmer extends Function5[Int, String, String, String, String, Farmer] {
     implicit val defaultWrites: Writes[Farmer] = new Writes[Farmer] {
       def writes(f: Farmer) = Json.obj(
       "id" -> f.id,
@@ -37,7 +37,20 @@ object Entities {
 
   }
 
-  case class User(id: Int, username: String, hashedPassword: Array[Byte], blocked: Boolean = false)
+  case class FarmArea(id: Int, name: String, parentId: Int, farmerId: Int, countryId: Int)
+
+  case class Role(id: Int, name: String)
+
+  object Permission extends Enumeration {
+    type Permission = Value
+    val HiringWorkers = Value("Hiring")
+    val PaperWork = Value("Papers")
+  }
+
+  case class Person(id: Int, firstName: String, lastName: String, birthDay: LocalDate, originId: Int)
+  case class Employee(id: Int, person: Person, farmAreaId: Int)
+
+  case class User(id: Int, username: String, hashedPassword: Array[Byte], blocked: Boolean = false, person: Person)
 
   case class Token(tokenValue: String, issued: Instant, validUntil: Instant, userId: Int)
 

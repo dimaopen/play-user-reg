@@ -1,7 +1,7 @@
 package models.dao
 
 import javax.inject.Inject
-import models.Entities.{Farmer, NewFarmer}
+import models.Entities.{Country, Farmer, NewFarmer}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
@@ -18,13 +18,11 @@ class FarmerDao @Inject() (val dbConfigProvider: DatabaseConfigProvider)
 
   import dbConfig.profile.api._
 
-  type CountryRow = (Int, String, String)
-
-  class CountryTable(tag: Tag) extends Table[CountryRow](tag, "country") {
+  class CountryTable(tag: Tag) extends Table[Country](tag, "country") {
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def code = column[String]("code")
     def name = column[String]("name", O.Unique)
-    def * = (id, code, name)
+    def * = (id, code, name).mapTo[Country]
   }
 
   val countries = TableQuery[CountryTable]
@@ -49,7 +47,7 @@ class FarmerDao @Inject() (val dbConfigProvider: DatabaseConfigProvider)
       f <- farmers
       c <- f.country
     } yield (f.id, f.firstName, f.lastName, f.taxNumber, c.code)
-    db.run(query.result).map(_.map(a => Farmer(a._1, a._2, a._3, a._4, a._5)))
+    db.run(query.result).map(_.map(Farmer.tupled))
   }
 
   def insertFarmer(nf: NewFarmer): Future[Int] = {
