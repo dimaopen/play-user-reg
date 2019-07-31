@@ -27,6 +27,11 @@ class FarmerDao @Inject() (val dbConfigProvider: DatabaseConfigProvider)
 
   val countries = TableQuery[CountryTable]
 
+  def countryByName(name: String): Future[Option[Country]] = {
+    val query: Query[CountryTable, Country, Seq] = countries.filter(_.name === name)
+    db.run(query.result.headOption)
+  }
+
   case class FarmerRow(id: Option[Int], firstName: String, lastName: String, taxNumber: String, countryId: Int)
 
   class FarmerTable(tag: Tag) extends Table[FarmerRow](tag, "farmer") {

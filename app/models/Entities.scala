@@ -37,7 +37,7 @@ object Entities {
 
   }
 
-  case class FarmArea(id: Int, name: String, parentId: Int, farmerId: Int, countryId: Int)
+  case class FarmArea(id: Int, name: String, parentId: Option[Int], farmerId: Int, countryId: Int)
 
   case class Role(id: Int, name: String)
 
