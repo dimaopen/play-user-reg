@@ -21,6 +21,8 @@ class AuthenticatedAction @Inject()(val parser: BodyParsers.Default, val userSer
                                    (implicit val executionContext: ExecutionContext)
   extends ActionBuilder[UserRequest, AnyContent]
     with ActionRefiner[Request, UserRequest] {
+  self =>
+
   override protected def refine[A](request: Request[A]): Future[Either[Result, UserRequest[A]]] =
     request.headers.get("X-Auth-Token") match {
       case None => Forbidden("No X-Auth-Token header presented").asLeft.pure[Future]
@@ -29,4 +31,15 @@ class AuthenticatedAction @Inject()(val parser: BodyParsers.Default, val userSer
         case Some(user) => new AuthenticatedRequest(user, request).asRight
       }
     }
+
+  def userAction(userName: String) = andThen(new ActionFunction[UserRequest, UserRequest] {
+    override def invokeBlock[A](request: UserRequest[A], block: UserRequest[A] => Future[Result]) = {
+      request.user.username match {
+        case `userName` => block(request)
+        case _ => Future.successful(Forbidden("Doing this action is not allowed"))
+      }
+    }
+
+    override protected def executionContext = self.executionContext
+  })
 }

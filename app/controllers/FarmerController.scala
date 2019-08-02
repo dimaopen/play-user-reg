@@ -29,4 +29,11 @@ class FarmerController @Inject()(cc: ControllerComponents, bp: PlayBodyParsers, 
         id => Created.withHeaders(LOCATION -> (controllers.routes.FarmerController.farmers().path() + '/' + id))
       )
   }
+
+  def deleteFarmer(id: Int) = authAction.userAction("admin").async(bp.empty) { implicit request =>
+    logger.info("User {} deleting farmer with id {} by user '{}'", id, request.user.username)
+    farmerDao.deleteFarmer(id).map(num => Ok(if (num == 0) "false" else "true"))
+  }
+
+
 }

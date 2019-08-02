@@ -45,6 +45,7 @@ object Entities {
     type Permission = Value
     val HiringWorkers = Value("Hiring")
     val PaperWork = Value("Papers")
+    val FarmerManager = Value("Manager")
   }
 
   case class Person(id: Int, firstName: String, lastName: String, birthDay: LocalDate, originId: Int)

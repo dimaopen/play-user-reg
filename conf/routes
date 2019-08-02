@@ -11,6 +11,7 @@ GET         /assets/*file        controllers.Assets.versioned(path="/public", fi
 
 GET         /farmers             controllers.FarmerController.farmers
 POST        /farmers             controllers.FarmerController.newFarmer
+DELETE      /farmers/:id         controllers.FarmerController.deleteFarmer(id: Int)
 
 GET         /farmAreas             controllers.FarmAreaController.farmAreas(parentId: Option[Int], offset: Option[Int], limit: Option[Int])
 

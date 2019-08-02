@@ -60,4 +60,9 @@ class FarmerDao @Inject() (val dbConfigProvider: DatabaseConfigProvider)
     db.run(query)
   }
 
+  def deleteFarmer(id: Int): Future[Int] = {
+    val query = (farmers.filter(_.id === id).delete)
+    db.run(query)
+  }
+
 }
