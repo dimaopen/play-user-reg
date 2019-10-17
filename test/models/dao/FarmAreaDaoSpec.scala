@@ -30,7 +30,7 @@ class FarmAreaDaoSpec extends PlaySpec {
 
   "FarmAreaDao" should {
 
-    "return all superiors of a an area" in {
+    "return all superiors of an area" in {
       val futureAreas = for {
         cherryO <- daoT.farmAreasByName("Cherry creek")
         areas <- daoT.superiors(cherryO.get.id)
