@@ -1,0 +1,6 @@
+-J-Xmx4G
+-J-XX:+UseConcMarkSweepGC
+-J-XX:+CMSClassUnloadingEnabled
+-J-XX:MaxMetaspaceSize=500m
+-J-Xss2M
+#-jvm-debug 5008
